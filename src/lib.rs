@@ -1,6 +1,9 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
+/// Sort a slice of `usize` based on an explicit comparator.
+/// Usually used to perform an indirect sort (i.e., to compute the indices
+/// that would sort the given items).
 pub fn sort<F>(xs: &mut [usize], cmp: &mut F)
 where
     F: FnMut(usize, usize) -> Ordering + Sized,
