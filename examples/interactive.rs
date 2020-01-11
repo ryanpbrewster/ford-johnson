@@ -1,27 +1,28 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
+use std::ops::Range;
 
 fn main() {
-    let mut items: Vec<String> = DEFAULT_ITEMS
+    let items: Vec<String> = DEFAULT_ITEMS
         .split_ascii_whitespace()
         .map(String::from)
         .collect();
 
     println!("sorting {:?}", items);
     let mut known = Vec::new();
-    loop {
-        let status = try_sort(&mut items, &known);
+    let order = loop {
+        let status = try_sort(0..items.len(), &known);
         match status.first_unknown {
-            None => break,
+            None => break status.ordered,
             Some(pair) => {
                 println!("~{} comparisons left", status.num_unknown);
                 known.push((pair, prompt_user(&items[pair.0], &items[pair.1])));
             }
         }
-    }
+    };
     println!("DONE! needed {} comparisons", known.len());
-    for (i, item) in items.into_iter().enumerate() {
-        println!("{}) {}", i + 1, item);
+    for i in 0..items.len() {
+        println!("{}) {}", i + 1, items[order[i]]);
     }
 }
 
@@ -37,9 +38,10 @@ impl Pair {
 struct SortStatus {
     first_unknown: Option<Pair>,
     num_unknown: usize,
+    ordered: Vec<usize>,
 }
 
-fn try_sort(items: &mut [String], known: &[(Pair, Ordering)]) -> SortStatus {
+fn try_sort(items: Range<usize>, known: &[(Pair, Ordering)]) -> SortStatus {
     let index = {
         let mut builder = HashMap::new();
         for &(pair, ord) in known {
@@ -59,11 +61,12 @@ fn try_sort(items: &mut [String], known: &[(Pair, Ordering)]) -> SortStatus {
             Ordering::Less
         })
     };
-    let mut xs: Vec<usize> = (0..items.len()).collect();
-    ford_johnson::merge_insertion_sort(&mut xs, &mut cmp);
+    let mut ordered: Vec<usize> = items.collect();
+    ford_johnson::sort(&mut ordered, &mut cmp);
     SortStatus {
         first_unknown,
         num_unknown,
+        ordered,
     }
 }
 

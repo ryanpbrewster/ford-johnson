@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
-pub fn merge_insertion_sort<F>(xs: &mut [usize], cmp: &mut F)
+pub fn sort<F>(xs: &mut [usize], cmp: &mut F)
 where
     F: FnMut(usize, usize) -> Ordering + Sized,
 {
@@ -20,7 +20,7 @@ where
     }
 
     // Now recursively sort those larger elements.
-    merge_insertion_sort(&mut xs[..half], cmp);
+    sort(&mut xs[..half], cmp);
 
     // Now do an insertion-sort to get the latter half of the array into order.
     for i in 0..half {
@@ -67,7 +67,7 @@ mod test {
     #[test]
     fn sorts_correctly_smoke() {
         let mut xs = vec![3, 5, 1, 2, 4];
-        merge_insertion_sort(&mut xs, &mut |a, b| a.cmp(&b));
+        sort(&mut xs, &mut |a, b| a.cmp(&b));
         assert_eq!(xs, vec![1, 2, 3, 4, 5]);
     }
 
@@ -78,7 +78,7 @@ mod test {
         for _ in 0..1000 {
             let mut xs = init.clone();
             xs.shuffle(&mut prng);
-            merge_insertion_sort(&mut xs, &mut |a, b| a.cmp(&b));
+            sort(&mut xs, &mut |a, b| a.cmp(&b));
             assert_eq!(xs, init);
         }
     }
@@ -86,7 +86,7 @@ mod test {
     #[test]
     fn manual() {
         let mut xs: Vec<usize> = (0..8).collect();
-        merge_insertion_sort(&mut xs, &mut |a: usize, b: usize| {
+        sort(&mut xs, &mut |a: usize, b: usize| {
             println!("cmp {} vs {}", a, b);
             a.cmp(&b)
         });
@@ -94,7 +94,7 @@ mod test {
 
     fn count_cmps(mut xs: Vec<usize>) -> usize {
         let mut cnt = 0;
-        merge_insertion_sort(&mut xs, &mut |a: usize, b: usize| {
+        sort(&mut xs, &mut |a: usize, b: usize| {
             cnt += 1;
             a.cmp(&b)
         });
