@@ -30,7 +30,7 @@ where
         // We known that y[i] < x[i], so we need to insert it to the left of x[i].
         let idx = find_insert_point(y, &xs[..2 * i], cmp);
         // Make room.
-        xs[idx..=half + i].rotate_right(1);
+        xs[idx..half + i + 1].rotate_right(1);
         // Insert it.
         xs[idx] = y;
     }
