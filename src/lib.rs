@@ -1,3 +1,7 @@
+#[cfg(test)]
+#[macro_use]
+extern crate quickcheck_macros;
+
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
@@ -75,7 +79,7 @@ mod test {
     }
 
     #[test]
-    fn sorts_correctly() {
+    fn sorts_correctly_random() {
         let init: Vec<usize> = (0..100).collect();
         let mut prng = rand_pcg::Pcg32::seed_from_u64(42);
         for _ in 0..1000 {
@@ -135,5 +139,14 @@ mod test {
         let mut prng = rand_pcg::Pcg32::seed_from_u64(999);
         xs.shuffle(&mut prng);
         assert_eq!(count_cmps(xs), 530);
+    }
+
+    #[quickcheck]
+    fn sorts_correctly(xs: Vec<usize>) -> bool {
+        let mut ys = xs.clone();
+        let mut zs = xs.clone();
+        sort(&mut ys, &mut |a, b| a.cmp(&b));
+        zs.sort();
+        ys == zs
     }
 }
