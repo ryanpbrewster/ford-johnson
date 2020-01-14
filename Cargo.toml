@@ -9,7 +9,12 @@ description = "Implementation of the Ford-Johnson algorithm (aka merge-insertion
 [dependencies]
 
 [dev-dependencies]
+criterion = "0.3"
 rand = "0.7"
 rand_pcg = "0.2"
 quickcheck = "0.9"
 quickcheck_macros = "0.9"
+
+[[bench]]
+name = "sort_benchmark"
+harness = false
