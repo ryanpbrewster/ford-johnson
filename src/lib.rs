@@ -17,13 +17,13 @@ where
     }
 
     // First, swap all the largest elements to the front.
-    let mut partner = HashMap::new();
+    let mut partner: HashMap<usize, Vec<usize>> = HashMap::new();
     let half = xs.len() / 2;
     for i in 0..half {
         if cmp(xs[i], xs[i + half]) == Ordering::Less {
             xs.swap(i, i + half);
         }
-        partner.insert(xs[i], xs[i + half]);
+        partner.entry(xs[i]).or_default().push(xs[i + half]);
     }
 
     // Now recursively sort those larger elements.
@@ -33,7 +33,7 @@ where
     for i in 0..half {
         // Every step of the way we'll be inserting an extra element,
         // so `x[i]` will be located at `xs[2*i]`.
-        let y = partner[&xs[2 * i]];
+        let y = partner.get_mut(&xs[2 * i]).unwrap().pop().unwrap();
         // We known that y[i] < x[i], so we need to insert it to the left of x[i].
         let idx = find_insert_point(y, &xs[..2 * i], cmp);
         // Make room.
