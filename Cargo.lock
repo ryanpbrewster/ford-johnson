@@ -190,7 +190,7 @@ dependencies = [
 
 [[package]]
 name = "ford-johnson"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "criterion 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "quickcheck 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
