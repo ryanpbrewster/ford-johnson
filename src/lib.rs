@@ -134,6 +134,25 @@ mod test {
     }
 
     #[test]
+    fn right_number_of_comparisons_knuth() {
+        // a(n) = Sum_{k=1..n} ceiling(log_2 (3k/4))
+        // This is the general formula for https://oeis.org/A001768
+        for n in 1..500 {
+            let expected = (1..=n)
+                .map(|k| f64::ceil(f64::log2(3.0 * k as f64 / 4.0)) as usize)
+                .sum();
+            let actual = count_cmps((0..n).collect());
+            assert!(
+                actual <= expected,
+                "{} items can be sorted in {} cmps but we used {}",
+                n,
+                expected,
+                actual,
+            );
+        }
+    }
+
+    #[test]
     fn right_number_of_comparisons_big() {
         let mut xs: Vec<usize> = (0..100).collect();
         let mut prng = rand_pcg::Pcg32::seed_from_u64(999);
